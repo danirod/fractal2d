@@ -1,4 +1,4 @@
-package danirod.fractal;
+package danirod.fractal.slick2d;
 
 import java.util.Random;
 
@@ -10,7 +10,15 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
-public class FractalViewer extends BasicGame {
+import danirod.fractal.Fractal;
+
+/**
+ * Fractal basic game for rendering. Includes some advanced code to make
+ * it better and to dynamically modify the fractal in real time.
+ * 
+ * @author danirod
+ */
+public class FractalGame extends BasicGame {
 
 	private Fractal f;
 	
@@ -20,7 +28,7 @@ public class FractalViewer extends BasicGame {
 	
 	private long seed;
 	
-	public FractalViewer(String title) {
+	public FractalGame(String title) {
 		super(title);
 		this.f = new Fractal();
 		rnd = new Random();
