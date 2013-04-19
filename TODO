@@ -1,0 +1,6 @@
+* Make Java2D version as advanced as Slick2D version.
+* Port this to C/C++ using SDL.
+
+Because this is an open source project, if by some reason you fork this
+project and do this features, feel free to create a merge request and I will
+add your code here.
