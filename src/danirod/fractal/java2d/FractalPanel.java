@@ -15,6 +15,8 @@ import danirod.fractal.Fractal;
  */
 public class FractalPanel extends JPanel
 {
+    private static final long serialVersionUID = 1L;
+    
     private Fractal f;
     
     public FractalPanel(Fractal f)

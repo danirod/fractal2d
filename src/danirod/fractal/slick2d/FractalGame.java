@@ -22,10 +22,21 @@ public class FractalGame extends BasicGame {
 
 	private Fractal f;
 	
+	/**
+	 * Number of iterations used by the generator. The more iterations are
+	 * done, the smoothest results we will get. However, the more time it
+	 * will take.
+	 */
 	private int itcount;
 	
+	/**
+	 * Random seed used to generate new random seeds.
+	 */
 	private Random rnd;
 	
+	/**
+	 * Current random seed being used by the fractal generator.
+	 */
 	private long seed;
 	
 	public FractalGame(String title) {
@@ -33,37 +44,62 @@ public class FractalGame extends BasicGame {
 		this.f = new Fractal();
 		rnd = new Random();
 		seed = rnd.nextLong();
-		itcount = 8;
+		itcount = 8; // initially we set to 8, it's a nice value.
 	}
-	
-	public static final int WIDTH = 800;
-	public static final int HEIGHT = 450;
 	
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
-		double[] data = f.getValues();
-		float sep = (float) WIDTH / (data.length - 1);
+	    int width = gc.getWidth(), height = gc.getHeight();
+	    
+		double[] data = f.getValues(); // value list
+		float sep = (float) width / (data.length - 1); // gap between points
+		g.setColor(Color.white); // needed in order to see anything
 		
-		g.setColor(Color.white);
 		Vector2f pixel0 = new Vector2f(), pixel1 = new Vector2f();
 		for(int k = 0; k < data.length - 1; k++) {
+		    // generate this point coordinates
 			pixel0.x = sep * k;
-			pixel0.y = HEIGHT / 2 - (float) data[k] * HEIGHT / 2;
+			pixel0.y = height / 2 - (float) data[k] * height / 2;
+			
+			// generate next point coordinates
 			pixel1.x = sep * (k + 1);
-			pixel1.y = HEIGHT / 2 - (float) data[k+1] * HEIGHT / 2;
-			g.drawLine(pixel0.x, pixel0.y, pixel1.x, pixel1.y);
+			pixel1.y = height / 2 - (float) data[k+1] * height / 2;
+			
+			g.drawLine(pixel0.x, pixel0.y, pixel1.x, pixel1.y); // and plot!
 		}
 		
-		g.drawString("Fractal | FPS: " + gc.getFPS(), 5, 5);
-		g.drawString("Threshold: " + f.getInitialThreshold() + " | Decay: " + f.getDecayLevel(), 5, 20);
-		g.drawString("Seed: " + seed, 5, 35);
-		g.drawString("Iterations: " + itcount + " | Values: " + data.length, 5, 50);
-		g.drawString("Reset: R - New Seed: S - Change Threshold: UP/DOWN", 5, gc.getHeight() - 35);
-		g.drawString("Change Decay: LEFT/RIGHT - Change Iterations: A/Q", 5, gc.getHeight() - 20);
+		// Render some debug information
+		String[] debug1 = {
+	        "Fractal | FPS: " + gc.getFPS(),
+	        "T: " + f.getInitialThreshold() + " | D: " + f.getDecayLevel(),
+	        "Seed: " + seed,
+	        "Iterations: " + itcount + " | Values: " + data.length,
+		};
+		String[] debug2 = {
+	        "Reset: R - New Seed: S - Change Threshold: UP/DOWN",
+	        "Change Decay: LEFT/RIGHT - Change Iterations: A/Q",
+		};
+		drawStrings(g, debug1, 5, 5);
+		drawStrings(g, debug2, 5, height - 2 * g.getFont().getLineHeight() - 5);
 		
+		// Sea level? Why not
 		g.setColor(Color.blue);
-		g.drawLine(0, HEIGHT * 0.6f, WIDTH, HEIGHT * 0.6f);
-		g.drawString("Sea Level", 5, HEIGHT * 0.6f + 5);
+		g.drawLine(0, height * 0.6f, width, height * 0.6f);
+		g.drawString("Sea Level", 5, height * 0.6f + 5);
+	}
+	
+	/**
+	 * Massive string renderer. Each string position in the array is rendered
+	 * as a new line. All the lines are rendered together.
+	 * @param g graphical context
+	 * @param strs string array to render
+	 * @param x X position for start rendering
+	 * @param y Y position for start rendering
+	 */
+	private void drawStrings(Graphics g, String[] strs, int x, int y)
+	{
+	    for(int i = 0; i < strs.length; i++)
+	        g.drawString(strs[i], x, y + g.getFont().getLineHeight() * i);
 	}
 
 	@Override
@@ -75,28 +111,28 @@ public class FractalGame extends BasicGame {
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
-		if(gc.getInput().isKeyPressed(Input.KEY_R)) {
+		if(gc.getInput().isKeyPressed(Input.KEY_R)) { // R: RESET
 			f = new Fractal();
 			gc.reinit();
-		} else if(gc.getInput().isKeyPressed(Input.KEY_S)) {
+		} else if(gc.getInput().isKeyPressed(Input.KEY_S)) { // S: RESEED
 			seed = rnd.nextLong();
 			gc.reinit();
-		} else if(gc.getInput().isKeyPressed(Input.KEY_UP)) {
+		} else if(gc.getInput().isKeyPressed(Input.KEY_UP)) { // UP: T++
 			f.setInitialThreshold(f.getInitialThreshold() + 0.05);
 			gc.reinit();
-		} else if(gc.getInput().isKeyPressed(Input.KEY_DOWN)) {
+		} else if(gc.getInput().isKeyPressed(Input.KEY_DOWN)) { // DOWN: T--
 			f.setInitialThreshold(f.getInitialThreshold() - 0.05);
 			gc.reinit();
-		} else if(gc.getInput().isKeyPressed(Input.KEY_LEFT)) {
+		} else if(gc.getInput().isKeyPressed(Input.KEY_LEFT)) { // LEFT: D--
 			f.setDecayLevel(f.getDecayLevel() - 0.05);
 			gc.reinit();
-		} else if(gc.getInput().isKeyPressed(Input.KEY_RIGHT)) {
+		} else if(gc.getInput().isKeyPressed(Input.KEY_RIGHT)) { // RIGHT: D++
 			f.setDecayLevel(f.getDecayLevel() + 0.05);
 			gc.reinit();
-		} else if(gc.getInput().isKeyPressed(Input.KEY_A)) {
+		} else if(gc.getInput().isKeyPressed(Input.KEY_A)) { // A: IT++
 			itcount++;
 			gc.reinit();
-		} else if(gc.getInput().isKeyPressed(Input.KEY_Q)) {
+		} else if(gc.getInput().isKeyPressed(Input.KEY_Q)) { // Q: IT--
 			if(itcount > 0)
 				itcount--;
 			gc.reinit();
