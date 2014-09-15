@@ -1,7 +1,7 @@
 # 2D Terrain Generator
 
 This is some simple source code for a 2D terrain generator based on the
-random midpoint displacement algorhtyhm. I've used Java for the sake of
+random midpoint displacement algorithm. I've used Java for the sake of
 portability, although even I recognize that I would have prefer to do
 this in C or C++ using probably SDL or pure OpenGL if possible (or, if
 I better knew how to use it).
@@ -17,6 +17,6 @@ Java2D version. If you don't have installed Slick2D you can just ignore or
 delete slick2d package and use Java2D version. It works the same.
 
 I made public this source code for educational reasons, in the hope that
-it helps to study such algorhythms like this and it helps anybody wanting
+it helps to study such algorithms like this and it helps anybody wanting
 to learn how to randomly generate terrains. Also, I published this source
 code because otherwise it will rot by just leaving it on my computer.
